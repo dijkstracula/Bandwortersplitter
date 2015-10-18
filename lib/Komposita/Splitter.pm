@@ -6,7 +6,7 @@ use warnings;
 
 =head1 NAME
 
-Komposita::Splitter - The great new Komposita::Splitter!
+Komposita::Splitter - Compound word splitter
 
 =head1 VERSION
 
@@ -19,34 +19,41 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+The Splitter module produces a list of list of words, comprised of 
+possible splittings of a supplied compound word.  Behaviour is
+driven by three callbacks, used to compute whether a substring is
+a valid word in the language, and, optionally, whether a substring
+at the beginning or end of a supplied string is a valid prefix or 
+suffix.  For example, a possible split of the German word 
+"Unsterblichkeit" might be
 
-Perhaps a little code snippet.
+# prefix                   suffix
+[[ "Un" ], ["Sterblich"], ["Keit"]]
+
+TODO: Come up with a more fun example than this.
 
     use Komposita::Splitter;
 
     my $foo = Komposita::Splitter->new();
     ...
 
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
 =head1 SUBROUTINES/METHODS
 
-=head2 function1
-
+=head2 new(&check_suffix, &check_word, &check_suffix)
+    
+    Consumes three functions, all of one argument, that:
+        1) Evaluates whether the argument is a valid prefix,
+        2) Evaluates whether the argument is a valid word,
+        3) Evaluates whether the argument is a valid suffix.
+        
+    In turn, produces a function that, when called with a given word, 
+    will produce an arrayref of all possible word splits for that word.
 =cut
 
-sub function1 {
-}
+sub new {
+    my ($check_prefix, $check_word, $check_suffix) = @_;
 
-=head2 function2
-
-=cut
-
-sub function2 {
+    return sub { [] }; #TODO!!!!1!
 }
 
 =head1 AUTHOR
