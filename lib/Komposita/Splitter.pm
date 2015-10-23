@@ -4,6 +4,10 @@ use 5.006;
 use strict;
 use warnings;
 
+use Carp;
+use Data::Dumper;
+use List::MoreUtils qw(all);
+
 =head1 NAME
 
 Komposita::Splitter - Compound word splitter
@@ -46,14 +50,66 @@ TODO: Come up with a more fun example than this.
         2) Evaluates whether the argument is a valid word,
         3) Evaluates whether the argument is a valid suffix.
         
-    In turn, produces a function that, when called with a given word, 
-    will produce an arrayref of all possible word splits for that word.
+    In turn, produces a function that, when called with a given word,
+    will produce an nary tree comprised of all possible splits.  A node in
+    this tree is a four-tuple containing a prefix, suffix, and pointers
+    to the child nodes.
 =cut
 
-sub new {
+sub new(&&&) {
+    croak 'Splitter::new() expects three coderefs; got <' 
+            . join(',', map { ref($_) || "SCALAR" } @_) 
+            . '>'
+        unless (@_ == 3 and all { ref($_) eq "CODE" } @_);
+
     my ($check_prefix, $check_word, $check_suffix) = @_;
 
-    return sub { [] }; #TODO!!!!1!
+    my $valid_split = sub($$) {
+        my ($prefix, $suffix) = @_;
+        return $check_word->($prefix) and $check_word->($suffix);
+    };
+    
+    my $valid_prefix = sub($$) {
+        my ($prefix, $suffix) = @_;
+        return $check_prefix->($prefix) and $check_word->($suffix);
+    };
+    
+    my $valid_suffix = sub($$) {
+        my ($prefix, $suffix) = @_;
+        return $check_word->($prefix) and $check_suffix->($suffix);
+    };
+
+    my $fn;
+    $fn = sub($) {
+        my ($str) = @_;
+        my $ret = [];
+
+        if ($str eq '' or !$check_word->($str)) {
+            return $ret;
+        }
+
+        for my $i (1 .. length($str) - 1) {
+            my $prefix = substr($str, 0, $i);
+            my $suffix = substr($str, $i, length($str));
+    
+            my ($ptree, $stree) = ($fn->($prefix), $fn->($suffix));
+
+            if ($valid_split->($prefix, $suffix) or
+                ($i == 1                and $valid_prefix->($prefix, $suffix)) or
+                ($i == length($str) - 1 and $valid_suffix->($prefix, $suffix))) {
+                push @$ret, {
+                    prefix => $prefix,
+                    suffix => $suffix,
+                    ptree => $fn->($prefix),
+                    stree => $fn->($suffix)
+                };
+            }
+        }
+            
+        return $ret;
+    };
+
+    return $fn;
 }
 
 =head1 AUTHOR
