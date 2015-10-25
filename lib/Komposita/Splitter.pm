@@ -64,6 +64,7 @@ sub new(&&&) {
         unless (@_ == 3 && all { ref($_) eq "CODE" } @_);
 
     my ($check_prefix, $check_word, $check_suffix) = @_;
+    my %arg_cache;
 
     my $valid_split = sub($$) {
         my ($prefix, $suffix) = @_;
@@ -80,13 +81,17 @@ sub new(&&&) {
 
 
     my $fn;
-    $fn = __internal_memoize( sub($) {
+    $fn = sub($) {
         my ($str) = @_;
         my $ret = [];
 
-        # Base case: The input string is empty.
+        # Base case: The input string is empty or has already
+        # been computed.
         if ($str eq '') {
             return $ret;
+        }
+        if (exists($arg_cache{$str})) {
+            return $arg_cache{$str};
         }
 
         # If the supplied word is present in the dictionary,
@@ -118,9 +123,10 @@ sub new(&&&) {
 
             }
         }
-                
+               
+        $arg_cache{$str} = $ret;
         return $ret;
-    });
+    };
 
     return $fn;
 }
@@ -132,25 +138,7 @@ sub new(&&&) {
 sub tree_as_json($@) {
     my ($tree) = @_;
     my $j = new JSON;
-    Test::More::diag(Dumper($tree));
     return $j->encode($tree, {utf8 => 1, pretty => 1});
-}
-
-# The built-in memoizer unfortunately has no way to not install
-# the memoized function in the symbol table, so roll our own
-# dumb little one here.  (TODO: ask @hachi whether or not this
-# is actually true!)
-sub __internal_memoize(&) {
-    my ($fun) = @_;
-    my %cache;
-
-    my $trampoline = sub($) {
-        my ($arg) = @_;
-        $cache{$arg} = $fun->($arg) unless exists $cache{$arg};
-        return $cache{$arg};
-    };
-
-    return $trampoline;
 }
 
 =head1 AUTHOR
