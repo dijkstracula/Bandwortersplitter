@@ -6,6 +6,7 @@ use warnings;
 
 use Carp;
 use Data::Dumper;
+use JSON;
 use List::MoreUtils qw(all);
 
 =head1 NAME
@@ -53,7 +54,7 @@ TODO: Come up with a more fun example than this.
     In turn, produces a function that, when called with a given word,
     will produce an nary tree comprised of all possible splits.  A node in
     this tree is a four-tuple containing a prefix, suffix, and pointers
-    to the child nodes.
+    to the child nodes.  Leaf nodes are a simple hash with a match field.
 =cut
 
 sub new(&&&) {
@@ -122,6 +123,17 @@ sub new(&&&) {
     });
 
     return $fn;
+}
+
+=head2 tree_as_json(@$word_tree)
+    Produces a JSON representation of the supplied tree.
+=cut
+
+sub tree_as_json($@) {
+    my ($tree) = @_;
+    my $j = new JSON;
+    Test::More::diag(Dumper($tree));
+    return $j->encode($tree, {utf8 => 1, pretty => 1});
 }
 
 # The built-in memoizer unfortunately has no way to not install
