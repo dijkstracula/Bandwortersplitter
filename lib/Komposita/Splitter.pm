@@ -60,56 +60,85 @@ sub new(&&&) {
     croak 'Splitter::new() expects three coderefs; got <' 
             . join(',', map { ref($_) || "SCALAR" } @_) 
             . '>'
-        unless (@_ == 3 and all { ref($_) eq "CODE" } @_);
+        unless (@_ == 3 && all { ref($_) eq "CODE" } @_);
 
     my ($check_prefix, $check_word, $check_suffix) = @_;
 
     my $valid_split = sub($$) {
         my ($prefix, $suffix) = @_;
-        return $check_word->($prefix) and $check_word->($suffix);
+        return $check_word->($prefix) && $check_word->($suffix);
     };
-    
     my $valid_prefix = sub($$) {
-        my ($prefix, $suffix) = @_;
-        return $check_prefix->($prefix) and $check_word->($suffix);
+        my ($prefix, $stree) = @_;
+        return (scalar @$stree > 0) && $check_prefix->($prefix);
     };
-    
     my $valid_suffix = sub($$) {
-        my ($prefix, $suffix) = @_;
-        return $check_word->($prefix) and $check_suffix->($suffix);
+        my ($ptree, $suffix) = @_;
+        return (scalar @$ptree > 0) && $check_suffix->($suffix);
     };
 
+
     my $fn;
-    $fn = sub($) {
+    $fn = __internal_memoize( sub($) {
         my ($str) = @_;
         my $ret = [];
 
-        if ($str eq '' or !$check_word->($str)) {
+        # Base case: The input string is empty.
+        if ($str eq '') {
             return $ret;
         }
 
+        # If the supplied word is present in the dictionary,
+        # add a leaf node.
+        if ($check_word->($str)) {
+            push @$ret, {
+                match => $str,
+            };
+        }
+
+        # Recursive case: Partition $str into a prefix and a suffix.
         for my $i (1 .. length($str) - 1) {
             my $prefix = substr($str, 0, $i);
             my $suffix = substr($str, $i, length($str));
-    
-            my ($ptree, $stree) = ($fn->($prefix), $fn->($suffix));
+  
 
+            # TODO: Remove redundant recursive calls or add a layer
+            # of memoization.
             if ($valid_split->($prefix, $suffix) or
-                ($i == 1                and $valid_prefix->($prefix, $suffix)) or
-                ($i == length($str) - 1 and $valid_suffix->($prefix, $suffix))) {
+                ($valid_prefix->($prefix, $fn->($suffix))) or
+                ($valid_suffix->($fn->($prefix), $suffix))) {
+
                 push @$ret, {
                     prefix => $prefix,
                     suffix => $suffix,
                     ptree => $fn->($prefix),
                     stree => $fn->($suffix)
                 };
+
             }
         }
-            
+                
         return $ret;
-    };
+    });
 
     return $fn;
+}
+
+# The built-in memoizer unfortunately has no way to not install
+# the memoized function in the symbol table, so roll our own
+# dumb little one here.  (TODO: ask @hachi whether or not this
+# is actually true!)
+sub __internal_memoize(&) {
+    my ($fun) = @_;
+    my %cache;
+
+    my $trampoline = sub($) {
+        my ($arg) = @_;
+        $cache{$arg} = $fun->($arg) unless exists $cache{$arg};
+        return $cache{$arg};
+    };
+
+    return $trampoline;
 }
 
 =head1 AUTHOR
