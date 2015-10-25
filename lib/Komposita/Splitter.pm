@@ -36,11 +36,14 @@ suffix.  For example, a possible split of the German word
 [[ "Un" ], ["Sterblich"], ["Keit"]]
 
 TODO: Come up with a more fun example than this.
-
+    
     use Komposita::Splitter;
+    use Komposita::Transformer;
 
-    my $foo = Komposita::Splitter->new();
-    ...
+    my $sp = Komposita::Splitter->new(
+        \&de_prefix_lookup, \&de_word_lookup, \&de_suffix_lookup);
+
+    my $tree = $sp->("entschuldigung");
 
 =head1 SUBROUTINES/METHODS
 
