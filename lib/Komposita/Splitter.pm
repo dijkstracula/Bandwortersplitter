@@ -24,21 +24,20 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-The Splitter module produces a list of list of words, comprised of 
-possible splittings of a supplied compound word.  Behaviour is
-driven by three callbacks, used to compute whether a substring is
-a valid word in the language, and, optionally, whether a substring
-at the beginning or end of a supplied string is a valid prefix or 
-suffix.  For example, a possible split of the German word 
-"Unsterblichkeit" might be
+The heart of Splitter is the functor `new` that produces a function
+of one argument, that returns a tree comprised of possible splittings 
+of a supplied compound word.  Behaviour is driven by three callbacks, 
+used to compute whether a substring is a valid word in the language,
+and, optionally, whether a substring at the beginning or end of a
+supplied string is a valid prefix or suffix.  For example, the possible
+splits of the German word "Unsterblichkeit" might be
 
-# prefix                   suffix
-[[ "Un" ], ["Sterblich"], ["Keit"]]
+[[ "Un" , "Sterblich"], ["Keit"]],
+[[ "Un" ], ["Sterblich", "Keit"]]
 
 TODO: Come up with a more fun example than this.
     
     use Komposita::Splitter;
-    use Komposita::Transformer;
 
     my $sp = Komposita::Splitter->new(
         \&de_prefix_lookup, \&de_word_lookup, \&de_suffix_lookup);

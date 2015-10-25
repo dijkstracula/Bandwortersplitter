@@ -4,7 +4,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME             => 'Komposita::Splitter',
+    NAME             => 'Komposita',
     AUTHOR           => q{Nathan Taylor <nbtaylor@gmail.com>},
     VERSION_FROM     => 'lib/Komposita/Splitter.pm',
     ABSTRACT_FROM    => 'lib/Komposita/Splitter.pm',
@@ -23,5 +23,5 @@ WriteMakefile(
         #'Foo::Bar::Module' => 5.0401,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Komposita-Splitter-*' },
+    clean => { FILES => 'Komposita-*' },
 );
