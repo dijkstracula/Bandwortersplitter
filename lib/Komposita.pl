@@ -22,23 +22,22 @@ our $VERSION = '0.01';
     use Komposita::Splitter;
     use Komposita::Transform;
 
-    # populate a dictionary of prefixes, suffixes, and words
+    ######## populate a dictionary of prefixes, 
+    ######## suffixes, and a de->en dictionary
     $prefixes{$_}++ for (["aus", "ent", "un", ...]);
-    $words{$_}++ for (["das", "ist", "du", ...]);
     $suffixes{$_}++ for (["bar", "heit", "keit", ...]);
-
     %dict = { "das" => "that", "ist" => "is", ... };
 
-    # generate a splitter based on those dictionaries
+    ######## generate a splitter based on those dictionaries
     my $sp = Komposita::Splitter->new(
-        { exists($prefixes($_)); },
-        { exists($words($_)); },
-        { exists($suffixes($_)); });
+        sub { exists($prefixes{$_}); },
+        sub { exists($dict{$_});     },
+        sub { exists($suffixes{$_}); });
 
-    # build a tree of word splittings
+    ######## build a tree of word splittings
     my $tree = $sp->("entschuldigung");
 
-    # operate over those trees
+    ######## operate over those trees
     my $translation = Komposita::Transform::map( 
         sub {
             my ($node) = @_;
@@ -46,6 +45,8 @@ our $VERSION = '0.01';
               en => %dict{$node->{match}} };
         }, 
         $tree);
+
+    print(Kompositta::Splitter::tree_as_json($translation));
 
 =head1 AUTHOR
 
