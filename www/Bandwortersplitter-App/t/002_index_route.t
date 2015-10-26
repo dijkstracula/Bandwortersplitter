@@ -1,12 +1,12 @@
 use strict;
 use warnings;
 
-use Komposita::App;
+use Bandwordersplitter::App;
 use Test::More tests => 2;
 use Plack::Test;
 use HTTP::Request::Common;
 
-my $app = Komposita::App->to_app;
+my $app = Bandwordersplitter::App->to_app;
 is( ref $app, 'CODE', 'Got app' );
 
 my $test = Plack::Test->create($app);

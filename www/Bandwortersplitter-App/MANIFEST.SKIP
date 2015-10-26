@@ -14,4 +14,4 @@ Makefile$
 MYMETA.*
 ^.gitignore
 ^.svn\/
-^Komposita-App-
+^Bandwordersplitter-App-

@@ -6,7 +6,7 @@ Makefile.PL
 views/index.tt
 views/layouts/main.tt
 bin/app.psgi
-lib/Komposita/App.pm
+lib/Bandwordersplitter/App.pm
 environments/production.yml
 environments/development.yml
 t/002_index_route.t

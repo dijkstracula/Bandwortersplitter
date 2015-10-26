@@ -6,7 +6,7 @@ use warnings;
 
 =head1 NAME
 
-Komposita - Compound word manipulation library
+Bandwörtersplitter - Compound word manipulation website
 
 =head1 VERSION
 
@@ -18,6 +18,9 @@ our $VERSION = '0.01';
 
 
 =head1 SYNOPSIS
+
+This repo comprises two parts: the `Komposita` word splitter
+module and a Dancer-fronted webapp.
 
     use Komposita::Splitter;
     use Komposita::Transform;

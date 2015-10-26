@@ -1,4 +1,4 @@
-package Komposita::App;
+package Bandwordersplitter::App;
 use Dancer2;
 
 our $VERSION = '0.1';

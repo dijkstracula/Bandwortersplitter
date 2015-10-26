@@ -8,9 +8,9 @@ my $eumm_version = $ExtUtils::MakeMaker::VERSION;
 $eumm_version =~ s/_//;
 
 WriteMakefile(
-    NAME                => 'Komposita::App',
+    NAME                => 'Bandwordersplitter::App',
     AUTHOR              => q{YOUR NAME <youremail@example.com>},
-    VERSION_FROM        => 'lib/Komposita/App.pm',
+    VERSION_FROM        => 'lib/Bandwordersplitter/App.pm',
     ABSTRACT            => 'YOUR APPLICATION ABSTRACT',
     ($eumm_version >= 6.3001
       ? ('LICENSE'=> 'perl')
@@ -22,5 +22,5 @@ WriteMakefile(
         'Dancer2'     => 0.163000,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'Komposita-App-*' },
+    clean               => { FILES => 'Bandwordersplitter-App-*' },
 );

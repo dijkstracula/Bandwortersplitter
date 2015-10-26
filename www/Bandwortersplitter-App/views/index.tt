@@ -1,0 +1,20 @@
+<div id="page">
+
+<div id="header">
+<h1>Bandwörtersplitter</h1>
+<h3>An automatic German compound word splitter</h3>
+</div>
+
+<div id="content">
+    <div id="about">
+    <p>Enter a compound word in the form below to see
+    possible splits.  Examples: "worterbuch",
+    "entschuldigung"</p>
+    </div>
+
+    <form>
+        <input type="text" placeholder="Search..." required>
+        <input type="button" value="Split!">
+    </form>
+</content>
+</div>
