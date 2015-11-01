@@ -7,4 +7,9 @@ get '/' => sub {
     template 'index';
 };
 
+get '/split' => sub {
+    my $query = params->{"q"};
+    die "missing parameter" unless $query;
+};
+
 true;

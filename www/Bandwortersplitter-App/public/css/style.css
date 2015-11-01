@@ -5,6 +5,8 @@ body {
     background-color: #ddd;
     color: #333;
     text-align: center;
+
+    font-family: sans-serif;
 }
 
 #content {
@@ -12,10 +14,24 @@ body {
     background-color: white;
     padding: 25px;
     width: 500px;
+    text-align: left;
+    font-size: 18px;
 }
 
 #about {
-    text-align: left;
-    padding-left: 75px;
-    padding-right: 30px;
+}
+
+input {
+    margin: 0;
+    appearance: none;
+    box-shadow: none;
+    border-radius: none;
+    border: solid 2px #c9c9c9;
+
+}
+
+input[type="text"] {
+    width: 100%;
+    transition: border 0.3s;
+    font-size: 24px;
 }

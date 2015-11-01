@@ -2,7 +2,7 @@
 
 <div id="header">
 <h1>Bandwörtersplitter</h1>
-<h3>An automatic German compound word splitter</h3>
+<h3>A German compound word splitter</h3>
 </div>
 
 <div id="content">
@@ -13,8 +13,7 @@
     </div>
 
     <form>
-        <input type="text" placeholder="Search..." required>
-        <input type="button" value="Split!">
+        <input type="text" required>
     </form>
 </content>
 </div>
