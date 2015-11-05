@@ -74,18 +74,18 @@ sub new(&&&) {
     };
     my $valid_prefix = sub($$) {
         my ($prefix, $stree) = @_;
-        return (scalar @$stree > 0) && $check_prefix->($prefix);
+        return (keys %$stree) && $check_prefix->($prefix);
     };
     my $valid_suffix = sub($$) {
         my ($ptree, $suffix) = @_;
-        return (scalar @$ptree > 0) && $check_suffix->($suffix);
+        return (keys %$ptree) && $check_suffix->($suffix);
     };
 
 
     my $fn;
     $fn = sub($) {
         my ($str) = @_;
-        my $ret = [];
+        my $ret = {};
 
         # Base case: The input string is empty or has already
         # been computed.
@@ -99,30 +99,24 @@ sub new(&&&) {
         # If the supplied word is present in the dictionary,
         # add a leaf node.
         if ($check_word->($str)) {
-            push @$ret, {
-                match => $str,
-            };
+        	$ret->{match} = $str;
         }
 
         # Recursive case: Partition $str into a prefix and a suffix.
+        # If both are valid strings, include in the set to be returned.
         for my $i (1 .. length($str) - 1) {
             my $prefix = substr($str, 0, $i);
             my $suffix = substr($str, $i, length($str));
   
-
-            # TODO: Remove redundant recursive calls or add a layer
-            # of memoization.
-            if ($valid_split->($prefix, $suffix) or
-                ($valid_prefix->($prefix, $fn->($suffix))) or
+            if ($valid_split->($prefix, $suffix)                  or
+                ($valid_prefix->($prefix,        $fn->($suffix))) or
                 ($valid_suffix->($fn->($prefix), $suffix))) {
 
-                push @$ret, {
-                    prefix => $prefix,
-                    suffix => $suffix,
-                    ptree => $fn->($prefix),
-                    stree => $fn->($suffix)
-                };
-
+                $ret->{prefix} = $prefix;
+                $ret->{suffix} = $suffix;
+                $ret->{ptree} = $fn->($prefix);
+                $ret->{stree} = $fn->($suffix);
+                last;
             }
         }
                
@@ -137,7 +131,7 @@ sub new(&&&) {
     Produces a JSON representation of the supplied tree.
 =cut
 
-sub tree_as_json($@) {
+sub tree_as_json($%) {
     my ($tree) = @_;
     my $j = new JSON;
     return $j->encode($tree, {utf8 => 1, pretty => 1});

@@ -38,7 +38,41 @@ as defined in Komposita::Splitter.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 map(@$tree, \&f)
+=head2 filter(\&f, @$tree)
+    Produces a split tree such that the only leafs present are
+    the ones in the original where the function `f`, when supplied
+    with that leaf, evaluated to a truthy value.
+
+    `f` must consume a leaf node and produce a scalar.
+=cut
+
+sub filter {
+    my ($f, $tree) = @_;
+
+    croak 'Transform::filter() expects an arrayref and a sub; got <'
+            . join(',', map { ref($_) || "SCALAR" } @_) . '>'
+        unless (ref($tree) eq 'ARRAY' &&
+                ref($f)    eq 'CODE');
+
+    my $ret = [];
+
+    for my $node (@$tree) {
+        if (_is_leaf($node)) {
+            if ($f->($node)) {
+                push @$ret, $node;
+            }
+        } else {
+            my $recret = Komposita::Transform::filter->($f, $node);
+            if (scalar(@$recret) > 0) {
+                push @$ret, $recret;
+            }
+        }
+    }
+
+    return $ret;
+}
+
+=head2 map(\&f, @$tree)
     Produces a split tree of the same shape as the supplied one but
     where each leaf node is transformed according to the sub `f`.
 
@@ -49,15 +83,14 @@ as defined in Komposita::Splitter.
 sub map {
     my ($f, $tree) = @_;
 
-    Test::More::diag(Dumper($f));
-    croak 'Transform::map() expects an arrayref and a sub; got <' 
+    croak 'Transform::map() expects an arrayref and a sub; got <'
             . join(',', map { ref($_) || "SCALAR" } @_) . '>'
         unless (ref($tree) eq 'ARRAY' &&
                 ref($f)    eq 'CODE');
 
     my @ret = map {
         if (_is_leaf($_)) {
-            f->($_);
+            $f->($_);
         } else {
             Komposita::Transform::map->($f, $_);
         }

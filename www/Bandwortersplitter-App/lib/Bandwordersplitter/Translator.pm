@@ -1,7 +1,9 @@
-package Bandwordersplitter::App;
+package Bandwordersplitter::Translator;
 
 use strict;
 use warnings;
+
+use Komposita::Splitter;
 #use Net::Dict;
 
 #TODO: this should be configurable to use
@@ -16,7 +18,7 @@ sub file_to_set {
    
     while (my $line = <$fd>) {
         chomp $line;
-        $set{$line}++;
+        $set{lc($line)}++;
     }
 
     return \%set;

@@ -22,11 +22,9 @@ sub trim { my $s = shift; $s =~ s/\s//g; return $s };
 BEGIN {
     my $yepper = Komposita::Splitter::new(\&nope, \&yep, \&nope);
 
-    is_deeply(Komposita::Splitter::tree_as_json($yepper->("")), "[]");
-    is_deeply(Komposita::Splitter::tree_as_json($yepper->("a")),
-        trim('[
-            { "match" : "a" }
-        ]'));
+	is_deeply(Komposita::Splitter::tree_as_json($yepper->("")), "{}");
+	is_deeply(Komposita::Splitter::tree_as_json($yepper->("a")),
+	    trim('{ "match" : "a" }'));
 }
 
 diag( "Testing Komposita::Splitter $Komposita::Splitter::VERSION, Perl $], $^X" );
