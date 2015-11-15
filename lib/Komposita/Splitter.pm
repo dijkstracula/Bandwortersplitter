@@ -87,20 +87,19 @@ sub new(&&&) {
         my ($str) = @_;
         my $ret = {};
 
-        # Base case: The input string is empty or has already
-        # been computed.
-        if ($str eq '') {
-            return $ret;
-        }
         if (exists($arg_cache{$str})) {
             return $arg_cache{$str};
         }
 
-        # If the supplied word is present in the dictionary,
-        # add a leaf node.
-        if ($check_word->($str)) {
-        	$ret->{match} = $str;
-        }
+		if ($str eq '') {
+			return $ret;
+		}
+
+		if ($check_word->($str) ||
+		    $check_prefix->($str) ||
+			$check_suffix->($str)) {
+			$ret->{match} = $str;
+		}
 
         # Recursive case: Partition $str into a prefix and a suffix.
         # If both are valid strings, include in the set to be returned.
