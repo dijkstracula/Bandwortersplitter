@@ -93,13 +93,13 @@ BEGIN {
                     stree => $sorry->("ung")
                 });
 
-    is_deeply($sorry->("entschuldigung"),
-                {
-                    prefix => "ent",
-                    suffix => "schuldigung",
-                    ptree => $sorry->("ent"),
-                    stree => $sorry->("schuldigung")
-                });
+			is_deeply($sorry->("entschuldigung"),
+			   {
+			       prefix => "entschuldig",
+			       suffix => "ung",
+			       ptree => $sorry->("entschuldig"),
+			       stree => $sorry->("ung")
+			   });
 }
 
 diag( "Testing Komposita::Splitter $Komposita::Splitter::VERSION, Perl $], $^X" );
