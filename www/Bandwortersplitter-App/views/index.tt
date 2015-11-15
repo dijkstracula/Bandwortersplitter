@@ -2,7 +2,7 @@
 
 <div id="header">
 <h1>Bandwörtersplitter</h1>
-<h3>A German compound word splitter</h3>
+<h2>A German compound word explorer</h2>
 </div>
 
 <div id="content">
@@ -15,15 +15,11 @@
         <input type="text" name="q" value="<% query %>">
     </form>
     </div>
-</div>
-
-<% IF query.length > 0 %>
-<div id="content">
-    <div>
+	
+	<% IF query.length > 0 %>
     <p> A possible word split for "<% query %>": </p>
 	<div id="result">
     <% tree %>
-	</div>
     </div>
 </div>
 <% END %>

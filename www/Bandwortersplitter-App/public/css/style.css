@@ -9,11 +9,17 @@ body {
     font-family: sans-serif;
 }
 
+#header {
+	font-size: 200%;
+	font-family: 'Ropa Sans' sans-serif;
+    padding: 25px;
+}
+
 #content {
     display: inline-block;
     background-color: white;
     padding: 25px;
-    width: 1024px;
+    width: 80%;
     text-align: left;
     font-size: 18px;
 }
@@ -60,3 +66,6 @@ table tr {
     vertical-align: top;
 }
 
+h1, h2 {
+	margin: 0px;
+}
