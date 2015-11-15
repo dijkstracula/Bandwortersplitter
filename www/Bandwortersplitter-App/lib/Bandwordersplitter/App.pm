@@ -10,68 +10,82 @@ our $VERSION = '0.1';
 
 $Data::Dumper::Indent = 3;
 
+sub leo_link {
+    my ($word) = @_;
+
+    return '<a href="http://dict.leo.org/ende/index_de.html#/search=' . $word . '">'
+        . $word . '</a>';
+}
 # TODO: I don't know what file this should go into
 sub tree_as_table {
-	my ($tree, $indent) = @_;
-	$indent ||= 0;
-	my @ret;
+    my ($node, $indent) = @_;
+    $indent ||= 0;
+    my @ret;
 
-	push @ret, "<table>";
+    push @ret, '<div id="tree">';
 
-	if (exists $tree->{match}) {
-		push @ret, "<tr>";
-		push @ret, "<td>" . $tree->{match} . "</td>";
-		push @ret, "</tr>";
+    if (exists $node->{match}) {
+        push @ret, "<p>" . leo_link($node->{match}) . "</p>";
 
-		if (1) {
-			push @ret, "<tr>";
-			push @ret, "<td>TRANSLATION GOES HERE</td>";
-			push @ret, "</tr>";
-		}
+        if (exists $node->{en}) {
+            push @ret, "<pre>" . $node->{en} . "</pre>";
+        }
+    }
 
-	}
 
-	push @ret, "<tr>";
+    if (defined $node->{ptree} && defined $node->{stree}) {
+    	push @ret, "<table>";
+        push @ret, "<td>";
+        push @ret, tree_as_table($node->{ptree}, $indent + 1);
+        push @ret, "</td>";
 
-	if (defined $tree->{ptree}) {
-		push @ret, "<td>";
-		push @ret, tree_as_table($tree->{ptree}, $indent + 1);
-		push @ret, "</td>";
-	}
+        push @ret, "<td>";
+        push @ret, tree_as_table($node->{stree}, $indent + 1);
+        push @ret, "</td>";
+    
+		push @ret, "</table>";
+    }
 
-	if (defined $tree->{stree}) {
-		push @ret, "<td>";
-		push @ret, tree_as_table($tree->{stree}, $indent + 1);
-		push @ret, "</td>";
-	}
 
-	push @ret, "</tr>";
+    push @ret, "</div>";
 
-	push @ret, "</table>";
-
-	return join("\n" . ("  " x $indent), @ret);
+    return join("\n" . ("  " x $indent), @ret);
 }
 
 
-get '/' => sub {
-    template 'index';
-};
+sub gen_split {
+    my ($query) = @_;
 
-get '/split/:q' => sub {
-    my $query = lc(params->{"q"});
-    die "missing parameter" unless $query;
+    debug "Query: " . $query;
+
+    return undef if $query eq '';
 
     my $splitter = Bandwordersplitter::Translator::new_de_splitter();
 
-	my $tree = $splitter->($query);
-	$tree = Komposita::Transform::map($tree,
-		sub {
-			my ($node) = @_;
+    my $node = $splitter->($query);
+    $node = Komposita::Transform::map(
+        sub {
+            my ($node) = @_;
+        
+            if (defined $node->{match}) {
+                $node->{en} = Bandwordersplitter::Translator::translate($node->{match});
+            }
+            return $node;
+        }, $node);
 
-			return $node;
-		});
+    return tree_as_table($node);
+}
 
-	template 'result', { tree => $tree }
+get '/' => sub {
+    if (defined params->{"q"}) {
+        my $query = lc(params->{"q"});
+        return template 'index', {
+            query => $query,
+            tree => gen_split($query)
+        };
+    }
+
+    template 'index';
 };
 
 true;

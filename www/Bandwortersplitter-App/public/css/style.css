@@ -18,6 +18,21 @@ body {
     font-size: 18px;
 }
 
+#result {
+	border: 2px solid black;
+	width: 100%;
+	overflow: auto;
+}
+
+#tree {
+    display: table;
+	width: 100%;
+    background-color: #e5e5ff;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid black;
+}
+
 #about {
 }
 
@@ -37,12 +52,11 @@ input[type="text"] {
 }
 
 table {
-	width: 100%;
-	border: 1px solid black;
+    width: 100%;
 }
 
 table tr {
-	text-align: center;
-	vertical-align: top;
+    text-align: center;
+    vertical-align: top;
 }
 

@@ -10,10 +10,20 @@
     <p>Enter a compound word in the form below to see
     possible splits.  Examples: "worterbuch",
     "entschuldigung"</p>
-    </div>
 
-    <form>
-        <input type="text" required>
+    <form action="" method="get">
+        <input type="text" name="q" value="<% query %>">
     </form>
-</content>
+    </div>
 </div>
+
+<% IF query.length > 0 %>
+<div id="content">
+    <div>
+    <p> A possible word split for "<% query %>": </p>
+	<div id="result">
+    <% tree %>
+	</div>
+    </div>
+</div>
+<% END %>

@@ -27,7 +27,6 @@ graphie
 haft
 haltig
 heit
-i
 ier
 ieren
 iert

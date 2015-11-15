@@ -89,15 +89,12 @@ sub map {
         unless (ref($node) eq 'HASH' &&
                 ref($f)    eq 'CODE');
 
-	if (_is_leaf($node)) {
-		return $f->($node);
-	} else {
-		my %ret = %$node;
-
-		$ret{ptree} = Komposita::Transform::map->($f, $node->{ptree});
-		$ret{stree} = Komposita::Transform::map->($f, $node->{stree});
-		return \%ret;
+	my $ret = $f->( {%$node} );
+	if (not _is_leaf($node)) {
+		$ret->{ptree} = Komposita::Transform::map->($f, $node->{ptree});
+		$ret->{stree} = Komposita::Transform::map->($f, $node->{stree});
 	}
+	return $ret;
 }
 
 #Produces whether a node is a leaf node.  For our purposes,

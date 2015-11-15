@@ -3,12 +3,14 @@ package Bandwordersplitter::Translator;
 use strict;
 use warnings;
 
+use Data::Dumper;
 use Komposita::Splitter;
 use Net::Dict;
 
 #TODO: this should be configurable to use
 #localhost.
-my $dict = Net::Dict->new("dict.org");
+my $dict = Net::Dict->new("localhost");
+$dict->setDicts('fd-deu-eng');
 
 sub file_to_set {
     my $path = shift;
@@ -44,7 +46,11 @@ sub new_de_splitter {
     );
 }
 
-sub translate_to_de($) {
-	my $res = $dict->match($_);
-	return $res->[0]->[1];
+sub translate($) {
+	my $res = $dict->define($_[0]);
+	return "?" unless defined $res;
+	return "?" unless defined $res->[0];
+
+	my @defn = split("\n", $res->[0]->[1]); # "word IPA \n translations"
+	return $defn[1];
 }

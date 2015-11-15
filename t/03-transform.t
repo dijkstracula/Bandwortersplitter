@@ -40,7 +40,7 @@ BEGIN {
     is_deeply({}, 
         Komposita::Transform::map(\&identity, {}));
     is_deeply({match => "a"},
-        Komposita::Transform::map(\&identity, { match => "a"}));
+        Komposita::Transform::map(\&identity, {match => "a"}));
     is_deeply({match => "aaa"},
         Komposita::Transform::map(\&match_times_three, { match => "a" }));
 
