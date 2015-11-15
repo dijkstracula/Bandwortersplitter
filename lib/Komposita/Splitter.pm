@@ -95,9 +95,7 @@ sub new(&&&) {
 			return $ret;
 		}
 
-		if ($check_word->($str) ||
-		    $check_prefix->($str) ||
-			$check_suffix->($str)) {
+		if ($check_word->($str)) {
 			$ret->{match} = $str;
 		}
 

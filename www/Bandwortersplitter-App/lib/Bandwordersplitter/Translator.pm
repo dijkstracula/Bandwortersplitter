@@ -4,11 +4,11 @@ use strict;
 use warnings;
 
 use Komposita::Splitter;
-#use Net::Dict;
+use Net::Dict;
 
 #TODO: this should be configurable to use
 #localhost.
-#my $dict = Net::Dict::new("dict.org");
+my $dict = Net::Dict->new("dict.org");
 
 sub file_to_set {
     my $path = shift;
@@ -34,10 +34,17 @@ sub new_de_splitter {
             exists($prefixes->{$_[0]});
         },
         sub {
-            exists($words->{$_[0]});
+            exists($prefixes->{$_[0]}) ||
+            exists($words->{$_[0]}) ||
+            exists($suffixes->{$_[0]});
         },
         sub {
             exists($suffixes->{$_[0]});
         }
     );
+}
+
+sub translate_to_de($) {
+	my $res = $dict->match($_);
+	return $res->[0]->[1];
 }

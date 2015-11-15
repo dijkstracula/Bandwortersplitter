@@ -47,27 +47,28 @@ as defined in Komposita::Splitter.
 =cut
 
 sub filter {
-    my ($f, $tree) = @_;
+    my ($f, $node) = @_;
 
-    croak 'Transform::filter() expects an arrayref and a sub; got <'
+    croak 'Transform::filter() expects an hashref and a sub; got <'
             . join(',', map { ref($_) || "SCALAR" } @_) . '>'
-        unless (ref($tree) eq 'ARRAY' &&
+        unless (ref($node) eq 'HASH' &&
                 ref($f)    eq 'CODE');
 
-    my $ret = [];
+    my $ret = undef;
 
-    for my $node (@$tree) {
-        if (_is_leaf($node)) {
-            if ($f->($node)) {
-                push @$ret, $node;
-            }
-        } else {
-            my $recret = Komposita::Transform::filter->($f, $node);
-            if (scalar(@$recret) > 0) {
-                push @$ret, $recret;
-            }
-        }
-    }
+	if (_is_leaf($node)) {
+		if ($f->($node)) {
+			$ret = $node;
+		}
+	} else {
+		my $pref = Komposita::Transform::filter->($f, $node->{ptree});
+		my $suff = Komposita::Transform::filter->($f, $node->{stree});
+
+		return undef unless (defined $pref || defined $suff);
+		
+		$ret->{ptree} = $pref;
+		$ret->{stree} = $suff;
+	}
 
     return $ret;
 }
@@ -81,22 +82,22 @@ sub filter {
 =cut
 
 sub map {
-    my ($f, $tree) = @_;
+    my ($f, $node) = @_;
 
-    croak 'Transform::map() expects an arrayref and a sub; got <'
+    croak 'Transform::map() expects a tree (hashref) and a sub; got <'
             . join(',', map { ref($_) || "SCALAR" } @_) . '>'
-        unless (ref($tree) eq 'ARRAY' &&
+        unless (ref($node) eq 'HASH' &&
                 ref($f)    eq 'CODE');
 
-    my @ret = map {
-        if (_is_leaf($_)) {
-            $f->($_);
-        } else {
-            Komposita::Transform::map->($f, $_);
-        }
-    } @$tree;
+	if (_is_leaf($node)) {
+		return $f->($node);
+	} else {
+		my %ret = %$node;
 
-    return \@ret;
+		$ret{ptree} = Komposita::Transform::map->($f, $node->{ptree});
+		$ret{stree} = Komposita::Transform::map->($f, $node->{stree});
+		return \%ret;
+	}
 }
 
 #Produces whether a node is a leaf node.  For our purposes,

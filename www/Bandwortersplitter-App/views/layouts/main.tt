@@ -7,16 +7,16 @@
   <link rel="stylesheet" href="<% request.uri_base %>/css/style.css">
 
 <!-- Grab jQuery from a CDN, fall back to local if necessary -->
-<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<!-- <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">/* <![CDATA[ */
     !window.jQuery && document.write('<script type="text/javascript" src="<% request.uri_base %>/javascripts/jquery.js"><\/script>')
-/* ]]> */</script>
+/* ]]> */</script>-->
 
 </head>
 <body>
 <% content %>
 <div id="footer">
-    <p>Made mit liebe by <a href="http://nathan.dijkstraula.net/">nathan</a> | <a href="https://github.com/dijkstracula/Bandwortersplitter">source</a></p>
+    <p>Made mit liebe von <a href="http://nathan.dijkstracula.net/">nathan</a> | <a href="https://github.com/dijkstracula/Bandwortersplitter">source</a></p>
 </div>
 </body>
 </html>

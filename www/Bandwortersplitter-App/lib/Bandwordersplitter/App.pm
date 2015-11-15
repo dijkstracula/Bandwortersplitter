@@ -4,33 +4,44 @@ use Bandwordersplitter::Translator;
 use Dancer2;
 use Data::Dumper;
 use Komposita::Splitter;
+use Komposita::Transform;
 
 our $VERSION = '0.1';
 
 $Data::Dumper::Indent = 3;
 
 # TODO: I don't know what file this should go into
-sub tree_as_table($%) {
-	my ($tree) = @_;
+sub tree_as_table {
+	my ($tree, $indent) = @_;
+	$indent ||= 0;
 	my @ret;
 
 	push @ret, "<table>";
 
 	if (exists $tree->{match}) {
-		push @ret, "<tr>" . $tree->{match} . "</tr>";
+		push @ret, "<tr>";
+		push @ret, "<td>" . $tree->{match} . "</td>";
+		push @ret, "</tr>";
+
+		if (1) {
+			push @ret, "<tr>";
+			push @ret, "<td>TRANSLATION GOES HERE</td>";
+			push @ret, "</tr>";
+		}
+
 	}
 
 	push @ret, "<tr>";
 
-	if (exists $tree->{ptree}) {
+	if (defined $tree->{ptree}) {
 		push @ret, "<td>";
-		push @ret, tree_as_table($tree->{ptree});
+		push @ret, tree_as_table($tree->{ptree}, $indent + 1);
 		push @ret, "</td>";
 	}
 
-	if (exists $tree->{stree}) {
+	if (defined $tree->{stree}) {
 		push @ret, "<td>";
-		push @ret, tree_as_table($tree->{stree});
+		push @ret, tree_as_table($tree->{stree}, $indent + 1);
 		push @ret, "</td>";
 	}
 
@@ -38,7 +49,7 @@ sub tree_as_table($%) {
 
 	push @ret, "</table>";
 
-	return join("\n", @ret);
+	return join("\n" . ("  " x $indent), @ret);
 }
 
 
@@ -52,10 +63,15 @@ get '/split/:q' => sub {
 
     my $splitter = Bandwordersplitter::Translator::new_de_splitter();
 
-	$Data::Dumper::Indent = 3;       # pretty print with array indices
-	$Data::Dumper::Useqq = 1;        # print strings in double quotes
+	my $tree = $splitter->($query);
+	$tree = Komposita::Transform::map($tree,
+		sub {
+			my ($node) = @_;
 
-	template 'result', { tree => tree_as_table($splitter->($query)) }
+			return $node;
+		});
+
+	template 'result', { tree => $tree }
 };
 
 true;

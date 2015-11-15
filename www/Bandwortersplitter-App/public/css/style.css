@@ -13,7 +13,7 @@ body {
     display: inline-block;
     background-color: white;
     padding: 25px;
-    width: 500px;
+    width: 1024px;
     text-align: left;
     font-size: 18px;
 }
@@ -38,11 +38,11 @@ input[type="text"] {
 
 table {
 	width: 100%;
-    text-align: center;
 	border: 1px solid black;
-	table-layout: fixed;
 }
 
 table tr {
-	vertical-align: text-top;
+	text-align: center;
+	vertical-align: top;
 }
+
