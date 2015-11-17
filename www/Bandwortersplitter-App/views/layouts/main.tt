@@ -4,7 +4,7 @@
   <meta charset="<% settings.charset %>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link href='https://fonts.googleapis.com/css?family=Ropa+Sans' rel='stylesheet' type='text/css'>
-  <title>Bandwörtersplitter</title>
+  <title>Bandwörtersplitter - <% query %></title>
   <link rel="stylesheet" href="<% request.uri_base %>/css/style.css">
 
 <!-- Grab jQuery from a CDN, fall back to local if necessary -->

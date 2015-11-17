@@ -8,7 +8,7 @@
 <div id="content">
     <div id="about">
     <p>Enter a compound word in the form below to see
-    possible splits.  Examples: "worterbuch",
+    possible splits.  Examples: "unabhängigkeitserklärung",
     "entschuldigung"</p>
 
     <form action="" method="get">

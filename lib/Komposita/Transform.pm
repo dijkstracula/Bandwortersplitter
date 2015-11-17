@@ -84,17 +84,20 @@ sub filter {
 sub map {
     my ($f, $node) = @_;
 
+	my $ret = {%$node};
+
     croak 'Transform::map() expects a tree (hashref) and a sub; got <'
             . join(',', map { ref($_) || "SCALAR" } @_) . '>'
         unless (ref($node) eq 'HASH' &&
                 ref($f)    eq 'CODE');
 
-	my $ret = $f->( {%$node} );
+	# Do a post-order traversal so we can depend on the children having
+	# had the transformation applied to them.
 	if (not _is_leaf($node)) {
 		$ret->{ptree} = Komposita::Transform::map->($f, $node->{ptree});
 		$ret->{stree} = Komposita::Transform::map->($f, $node->{stree});
 	}
-	return $ret;
+	return $f->($ret);
 }
 
 #Produces whether a node is a leaf node.  For our purposes,

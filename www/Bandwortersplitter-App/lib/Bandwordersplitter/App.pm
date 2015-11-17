@@ -1,6 +1,6 @@
 package Bandwordersplitter::App;
 
-use Bandwordersplitter::Renderer;
+use Bandwordersplitter::Renderer qw(gen_split);
 use Dancer2;
 use Komposita::Transform;
 

@@ -7,7 +7,7 @@ use Test::More;
 
 use Komposita::Splitter;
 
-plan tests => 18;
+plan tests => 20;
 
 sub nope($) {
     return 0;
@@ -93,12 +93,30 @@ BEGIN {
                     stree => $sorry->("ung")
                 });
 
-			is_deeply($sorry->("entschuldigung"),
+	is_deeply($sorry->("entschuldigung"),
 			   {
 			       prefix => "entschuldig",
 			       suffix => "ung",
 			       ptree => $sorry->("entschuldig"),
 			       stree => $sorry->("ung")
+			   });
+
+
+    my $friendly = Komposita::Splitter::new(
+		\&nope,
+        sub { return $_[0] eq 'freund'; },
+        sub { return $_[0] eq 's'; });
+
+	is_deeply($friendly->("freund"),
+			   {
+			       match => "freund",
+			   });
+	is_deeply($friendly->("freunds"),
+			   {
+			       prefix => "freund",
+			       suffix => "s",
+			       ptree => $friendly->("freund"),
+			       stree => $friendly->("s")
 			   });
 }
 

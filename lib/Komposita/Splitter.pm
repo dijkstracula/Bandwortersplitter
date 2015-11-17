@@ -101,19 +101,19 @@ sub new(&&&) {
 
         # Recursive case: Partition $str into a prefix and a suffix.
         # If both are valid strings, include in the set to be returned.
-        for my $i (0 .. length($str) - 2) {
+        for my $i (1 .. length($str) - 1) {
 			my $offset = int(length($str) / 2);
 			if ($i % 2 == 0) {
 				$offset += int($i / 2);
 			} else {
-				$offset -= int($i / 2) - 1;
+				$offset -= int($i / 2);
 			}
 
             my $prefix = substr($str, 0, $offset);
             my $suffix = substr($str, $offset, length($str));
-  
-            if ($valid_split->($prefix, $suffix)                  or
-                ($valid_prefix->($prefix,        $fn->($suffix))) or
+
+            if ($valid_split->($prefix, $suffix)                  ||
+                ($valid_prefix->($prefix,        $fn->($suffix))) ||
                 ($valid_suffix->($fn->($prefix), $suffix))) {
 
                 $ret->{prefix} = $prefix;

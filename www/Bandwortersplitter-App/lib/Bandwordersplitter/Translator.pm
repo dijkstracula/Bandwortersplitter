@@ -4,13 +4,14 @@ use strict;
 use warnings;
 
 use Data::Dumper;
+use Encode qw(decode encode);
 use Komposita::Splitter;
 use Net::Dict;
 
 #TODO: this should be configurable to use
 #localhost.
 my $dict = Net::Dict->new("localhost");
-$dict->setDicts('fd-deu-eng');
+$dict->setDicts('fd-deu-eng', 'german-english');
 
 sub file_to_set {
     my $path = shift;
@@ -36,9 +37,17 @@ sub new_de_splitter {
             exists($prefixes->{$_[0]});
         },
         sub {
-            exists($prefixes->{$_[0]}) ||
-            exists($words->{$_[0]}) ||
-            exists($suffixes->{$_[0]});
+			my ($word) = @_;
+			my $exists = exists($words->{$word});
+
+			# Try and match a prefix or a suffix so long as it
+			# isn't a super short one like '-e' or '-en'.
+			if (!$exists && length($word) >= 3) {
+            	$exists ||= exists($prefixes->{$_[0]});
+            	$exists ||= exists($suffixes->{$_[0]});
+			}
+
+			return $exists;
         },
         sub {
             exists($suffixes->{$_[0]});
@@ -47,10 +56,13 @@ sub new_de_splitter {
 }
 
 sub translate($) {
-	my $res = $dict->define($_[0]);
+	#TODO: Encoding this makes no sense
+	my $word = encode('UTF-8', $_[0], Encode::FB_DEFAULT);
+	my $res = $dict->define($word);
 	return "?" unless defined $res;
 	return "?" unless defined $res->[0];
 
-	my @defn = split("\n", $res->[0]->[1]); # "word IPA \n translations"
-	return $defn[1];
+	$res = $res->[0];
+	my @lines = split("\n", $res->[1]);
+	return decode('UTF-8', $lines[-1], Encode::FB_DEFAULT);
 }

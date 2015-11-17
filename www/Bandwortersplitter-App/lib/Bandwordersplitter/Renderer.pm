@@ -1,6 +1,7 @@
 package Bandwordersplitter::Renderer;
 
 use Bandwordersplitter::Translator;
+use Dancer2;
 use Data::Dumper;
 use Komposita::Splitter;
 use Komposita::Transform;
@@ -33,6 +34,7 @@ sub tree_as_table {
     if (defined $node->{ptree} && defined $node->{stree}) {
     	push @ret, "<table>";
 
+		push @ret, "<tr><td>$node->{prefix}</td><td>$node->{suffix}</td></tr>";
 		push @ret, "<tr>";
         push @ret, "<td>";
         push @ret, tree_as_table($node->{ptree}, $indent + 1);
@@ -64,10 +66,11 @@ sub gen_split {
     $node = Komposita::Transform::map(
         sub {
             my ($node) = @_;
-        
-            if (defined $node->{match}) {
-                $node->{en} = Bandwordersplitter::Translator::translate($node->{match});
-            }
+       
+			return $node unless (defined $node->{match});
+            
+			$node->{en} = Bandwordersplitter::Translator::translate($node->{match});
+
             return $node;
         }, $node);
 
