@@ -7,6 +7,7 @@ use Dancer2;
 use Data::Dumper;
 use Encode qw(decode encode);
 use Komposita::Splitter;
+use List::MoreUtils qw(uniq);
 use Memoize;
 use Net::Dict;
 
@@ -15,7 +16,7 @@ use Net::Dict;
 my $dict = Net::Dict->new("localhost");
 die "Can't connect to dict" unless $dict;
 
-$dict->setDicts('deu-eng', 'german-english');
+$dict->setDicts('fd-deu-eng', 'german-english');
 
 sub file_to_set {
     my $path = shift;
@@ -61,13 +62,28 @@ sub new_de_splitter {
 sub translate($) {
 	#TODO: Encoding this makes no sense
 	my $word = encode('UTF-8', $_[0], Encode::FB_DEFAULT);
-	my $res = $dict->define($word);
-	return undef unless defined $res;
-	return undef unless defined $res->[0];
+	my $defns = $dict->define($word);
+	my @ret;
+	my $len = 0;
 
-	$res = $res->[0];
-	my @lines = split("\n", $res->[1]);
-	return decode('UTF-8', $lines[-1], Encode::FB_DEFAULT);
+	return undef unless defined $defns;
+	return undef unless defined $defns->[0];
+
+	my @sorted = sort {
+		length($a->[1]) <=> length($b->[1])
+	} @$defns;
+
+	for my $defn (@sorted) {
+		last if $len > 75;
+		my @lines = split("\n", $defn->[1]);
+
+		my $stripped = $lines[-1];
+		$stripped =~ s/^\s+|\s+$//g;
+
+		push @ret, decode('UTF-8', $stripped, Encode::FB_DEFAULT);
+		$len += length($stripped);
+	}
+	return join '; ', uniq(@ret);
 }
 
 # Given a split node (e.g. an object with a $slice and \@splits), 
