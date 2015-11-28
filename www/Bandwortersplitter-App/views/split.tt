@@ -21,5 +21,5 @@
 	<div id="result">
     <% tree %>
     </div>
+	<% END %>
 </div>
-<% END %>

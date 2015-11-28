@@ -6,6 +6,7 @@ use Data::Dumper;
 use Exporter;
 use Komposita::Splitter;
 use Komposita::Transform;
+use Text::Wrap;
 
 our @EXPORT_OK = qw(gen_split);
 
@@ -25,11 +26,17 @@ sub tree_as_table {
 
     push @ret, '<div id="tree">';
 
-	push @ret, "<h3>" . leo_link($node->{de}) . "</h3>";
 	if (defined $node->{en}) {
-		push @ret, "<pre>" . $node->{en} . "</pre>";
+		push @ret, "<h3>" . leo_link($node->{de}) . "</h3>";
+	} else {
+		push @ret, "<h3>$node->{de}</h3>";
 	}
-	push @ret, "<h4>Score: $node->{ok_trans}/$node->{total_trans}</h4>";
+
+	if (defined $node->{en}) {
+		$Text::Wrap::columns = 30;
+		push @ret, "<pre>" . wrap("", "", $node->{en}) . "</pre>";
+	}
+	push @ret, "<h4>($node->{ok_trans}/$node->{total_trans})</h4>";
 
     if (defined $node->{split}) {
 		my $split = $node->{split};
