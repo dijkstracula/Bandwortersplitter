@@ -5,8 +5,8 @@ use strict;
 use warnings;
 
 use Carp;
+use Dancer2;
 use Data::Dumper;
-use JSON;
 use List::MoreUtils qw(all);
 
 =head1 NAME
@@ -82,29 +82,32 @@ sub filter {
 =cut
 
 sub map {
-    my ($f, $node) = @_;
-
-	my $ret = {%$node};
+    my ($f, $n) = @_;
 
     croak 'Transform::map() expects a tree (hashref) and a sub; got <'
             . join(',', map { ref($_) || "SCALAR" } @_) . '>'
-        unless (ref($node) eq 'HASH' &&
-                ref($f)    eq 'CODE');
-
+        unless (ref($n) eq 'HASH' &&
+                ref($f) eq 'CODE');
+	
+	my $node = {%$n};
+		
 	# Do a post-order traversal so we can depend on the children having
 	# had the transformation applied to them.
-	if (not _is_leaf($node)) {
-		$ret->{ptree} = Komposita::Transform::map->($f, $node->{ptree});
-		$ret->{stree} = Komposita::Transform::map->($f, $node->{stree});
-	}
-	return $f->($ret);
+	my @new_nodes = map {
+		{
+			ptree => Komposita::Transform::map->($f, $_->{ptree}),
+			stree => Komposita::Transform::map->($f, $_->{stree}), 
+		}
+	} @{$node->{splits}};
+	
+	$node->{splits} = \@new_nodes;
+
+	return $f->($node);
 }
 
-#Produces whether a node is a leaf node.  For our purposes,
-#an intermediary node has `ptree` and `stree` fields.
 sub _is_leaf($) {
     my ($obj) = @_;
-    return !((exists $obj->{stree}) && (exists $obj->{ptree}));
+    return (scalar($obj->{splits}) > 0) ? 1 : 0;
 }
 
 =head1 AUTHOR

@@ -3,8 +3,11 @@ package Bandwordersplitter::Renderer;
 use Bandwordersplitter::Translator;
 use Dancer2;
 use Data::Dumper;
+use Exporter;
 use Komposita::Splitter;
 use Komposita::Transform;
+
+our @EXPORT_OK = qw(gen_split);
 
 our $VERSION = '0.1';
 
@@ -22,26 +25,23 @@ sub tree_as_table {
 
     push @ret, '<div id="tree">';
 
-    if (exists $node->{match}) {
-        push @ret, "<h3>" . leo_link($node->{match}) . "</h3>";
+	push @ret, "<h3>" . leo_link($node->{de}) . "</h3>";
+	if (defined $node->{en}) {
+		push @ret, "<pre>" . $node->{en} . "</pre>";
+	}
+	push @ret, "<h4>Score: $node->{ok_trans}/$node->{total_trans}</h4>";
 
-        if (exists $node->{en}) {
-            push @ret, "<pre>" . $node->{en} . "</pre>";
-        }
-    }
-
-
-    if (defined $node->{ptree} && defined $node->{stree}) {
+    if (defined $node->{split}) {
+		my $split = $node->{split};
     	push @ret, "<table>";
 
-		push @ret, "<tr><td>$node->{prefix}</td><td>$node->{suffix}</td></tr>";
 		push @ret, "<tr>";
         push @ret, "<td>";
-        push @ret, tree_as_table($node->{ptree}, $indent + 1);
+        push @ret, tree_as_table($split->{ptree}, $indent + 1);
         push @ret, "</td>";
 
         push @ret, "<td>";
-        push @ret, tree_as_table($node->{stree}, $indent + 1);
+        push @ret, tree_as_table($split->{stree}, $indent + 1);
         push @ret, "</td>";
     
 		push @ret, "<tr>";
@@ -62,19 +62,12 @@ sub gen_split {
 
     my $splitter = Bandwordersplitter::Translator::new_de_splitter();
 
-    my $node = $splitter->($query);
-    $node = Komposita::Transform::map(
-        sub {
-            my ($node) = @_;
-       
-			return $node unless (defined $node->{match});
-            
-			$node->{en} = Bandwordersplitter::Translator::translate($node->{match});
+    my $result = $splitter->($query);
 
-            return $node;
-        }, $node);
+    $result = Komposita::Transform::map(
+        \&Bandwordersplitter::Translator::create_translated_node, $result);
 
-    return tree_as_table($node);
+    return tree_as_table($result);
 }
 
 true;

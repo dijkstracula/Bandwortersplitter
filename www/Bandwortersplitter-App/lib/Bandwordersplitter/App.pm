@@ -1,8 +1,9 @@
 package Bandwordersplitter::App;
 
-use Bandwordersplitter::Renderer qw(gen_split);
 use Dancer2;
 use Komposita::Transform;
+
+use Bandwordersplitter::Renderer;
 
 our $VERSION = '0.1';
 

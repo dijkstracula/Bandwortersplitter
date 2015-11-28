@@ -74,18 +74,20 @@ sub new(&&&) {
     };
     my $valid_prefix = sub($$) {
         my ($prefix, $stree) = @_;
-        return (keys %$stree) && $check_prefix->($prefix);
+		my $valid_tree = defined $stree->{match} || scalar(@{$stree->{splits}}) > 0;
+        return $valid_tree && $check_prefix->($prefix);
     };
     my $valid_suffix = sub($$) {
         my ($ptree, $suffix) = @_;
-        return (keys %$ptree) && $check_suffix->($suffix);
+		my $valid_tree = defined $ptree->{match} || scalar(@{$ptree->{splits}}) > 0;
+        return $valid_tree && $check_suffix->($suffix);
     };
 
 
     my $fn;
     $fn = sub($) {
         my ($str) = @_;
-        my $ret = {};
+        my $ret = {slice => $str, splits => []};
 
         if (exists($arg_cache{$str})) {
             return $arg_cache{$str};
@@ -96,7 +98,7 @@ sub new(&&&) {
 		}
 
 		if ($check_word->($str)) {
-			$ret->{match} = $str;
+			$ret->{match} = 1;
 		}
 
         # Recursive case: Partition $str into a prefix and a suffix.
@@ -116,11 +118,10 @@ sub new(&&&) {
                 ($valid_prefix->($prefix,        $fn->($suffix))) ||
                 ($valid_suffix->($fn->($prefix), $suffix))) {
 
-                $ret->{prefix} = $prefix;
-                $ret->{suffix} = $suffix;
-                $ret->{ptree} = $fn->($prefix);
-                $ret->{stree} = $fn->($suffix);
-                last;
+				push $ret->{splits}, {
+					ptree => $fn->($prefix),
+					stree => $fn->($suffix),
+				};
             }
         }
                

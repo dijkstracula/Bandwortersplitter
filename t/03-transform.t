@@ -8,7 +8,7 @@ use Test::More;
 use Komposita::Splitter;
 use Komposita::Transform;
 
-plan tests => 9;
+plan tests => 6;
 
 sub nope($) {
     return 0;
@@ -23,36 +23,61 @@ sub identity($) {
 }
 
 sub match_times_three($) {
-    return {match => $_[0]->{match} x 3};
+	my ($node) = @_;
+	my $new_node = {%$node};
+	$new_node->{slice} = $node->{slice} x 3;
+	return $new_node;
 }
 
 sub trim { my $s = shift; $s =~ s/\s//g; return $s };
 
+sub make_nomatch($) {
+	my ($word) = @_;
+	return { slice => $word, splits => [] };
+}
+
+sub make_match($) {
+	my ($word) = @_;
+	return { slice => $word, match => 1, splits => [] };
+}
+
 BEGIN {
-    isnt(Komposita::Transform::_is_leaf({
-                    prefix => "a", suffix => "b",
-                    ptree => [ { match => "a" } ],
-                    stree => [ { match => "b" } ]
-                }), 0);
-    is(Komposita::Transform::_is_leaf(
-            { match => "a" }), 1);
+    isnt(Komposita::Transform::_is_leaf(
+			{slice => "hi", splits => ["some_splits_here"]}), 0);
+    is(Komposita::Transform::_is_leaf(make_match("abc")), 1);
 
-    is_deeply({}, 
-        Komposita::Transform::map(\&identity, {}));
-    is_deeply({match => "a"},
-        Komposita::Transform::map(\&identity, {match => "a"}));
-    is_deeply({match => "aaa"},
-        Komposita::Transform::map(\&match_times_three, { match => "a" }));
+    is_deeply(make_match("a"),
+        Komposita::Transform::map(\&identity, make_match("a")));
+	is_deeply(make_match("aaa"),
+	    Komposita::Transform::map(\&match_times_three, make_match("a")));
 
-    is_deeply({},
-        Komposita::Transform::filter(\&yep, {}));
-    is_deeply({match => "a"},
-        Komposita::Transform::filter(\&yep, {match => "a"}));
+	is_deeply( { slice => "ab", 
+			     splits => [
+					{ ptree => { slice => "a", splits => []},
+					  stree => { slice => "b", splits => []}}
+				 ]},
+			 Komposita::Transform::map(\&identity, 
+				 { slice => "ab", 
+			       splits => [
+					{ ptree => { slice => "a", splits => []},
+					  stree => { slice => "b", splits => []}}
+				 ]}));
 
-    is_deeply(undef,
-        Komposita::Transform::filter(\&nope, {}));
-    is_deeply(undef,
-        Komposita::Transform::filter(\&nope, {match => "a"}));
+	is_deeply( { slice => "ababab", 
+			     splits => [
+					{ ptree => { slice => "aaa", splits => []},
+					  stree => { slice => "bbb", splits => []}}
+				 ]},
+			 Komposita::Transform::map(\&match_times_three, 
+				 { slice => "ab", 
+			       splits => [
+					{ ptree => { slice => "a", splits => []},
+					  stree => { slice => "b", splits => []}}
+				 ]}));
+
+	# TODO
+	#is_deeply(make_match("a"),
+	#    Komposita::Transform::filter(\&yep, make_match("a")));
 }
 
 diag( "Testing Komposita::Transform $Komposita::Transform::VERSION, Perl $], $^X" );

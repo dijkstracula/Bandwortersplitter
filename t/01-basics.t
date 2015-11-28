@@ -28,44 +28,75 @@ sub cons($) {
     return !vwls($str);
 }
 
+
+sub make_nomatch($) {
+	my ($word) = @_;
+	{ slice => $word, splits => [] };
+}
+
+sub make_match($) {
+	my ($word) = @_;
+	{ slice => $word, match => 1, splits => [] };
+}
+
 BEGIN {
     my $noper = Komposita::Splitter::new(\&nope, \&nope, \&nope);
+	my $empty = { splits => [] };
 
-    is_deeply($noper->(""),   {}, "nope() should produce no splits");
-    is_deeply($noper->("a"),  {}, "nope() should produce no splits");
-    is_deeply($noper->("aa"), {}, "nope() should produce no splits");
+    is_deeply($noper->(""),   make_nomatch(""), "nope() should produce no splits");
+    is_deeply($noper->("a"),  make_nomatch("a"), "nope() should produce no splits");
+    is_deeply($noper->("aa"), make_nomatch("aa"), "nope() should produce no splits");
 
 
     my $yepper = Komposita::Splitter::new(\&nope, \&yep, \&nope);
 
-    is_deeply($yepper->(""),   {}, "empty should produce no splits");
-    is_deeply($yepper->("a"), { match => "a" });
+    is_deeply($yepper->(""),   make_nomatch(""), "empty should produce no splits");
+    is_deeply($yepper->("a"), make_match("a"));
     is_deeply($yepper->("ab"),
-            { match => "ab",
-              prefix => "a", suffix => "b",
-              ptree => { match => "a" },
-              stree => { match => "b" }
+            { slice => "ab",
+			  match => 1,
+			  splits => 
+			  [
+				  {
+					  ptree => make_match("a"),
+					  stree => make_match("b")
+				  }
+			  ]
             });
     is_deeply($yepper->("abc"),
-            { match => "abc",
-              prefix => "a", suffix => "bc",
-              ptree => $yepper->("a"),
-              stree => $yepper->("bc")
+            { slice => "abc",
+			  match => 1,
+			  splits => 
+			  [
+				  {
+					  ptree => $yepper->("a"),
+					  stree => $yepper->("bc")
+		  	      },
+				  {
+					  ptree => $yepper->("ab"),
+					  stree => $yepper->("c")
+		  	      },
+			  ]
             });
 
 
     my $vowels_only = Komposita::Splitter::new(\&nope, \&vwls, \&nope);
     
-    is_deeply($vowels_only->("a"), { match => "a" });
+    is_deeply($vowels_only->("a"), make_match("a"));
 
-    is_deeply($vowels_only->("ab"), {});
-    is_deeply($vowels_only->("ba"), {});
-    is_deeply($vowels_only->("bb"), {});
+    is_deeply($vowels_only->("ab"), make_nomatch("ab"));
+    is_deeply($vowels_only->("ba"), make_nomatch("ba"));
+    is_deeply($vowels_only->("bb"), make_nomatch("bb"));
     is_deeply($vowels_only->("aa"),
-            { match => "aa",
-              prefix => "a", suffix => "a",
-              ptree => { match => "a" },
-              stree => { match => "a" },
+            { slice => "aa",
+			  match => 1,
+			  splits =>
+			  [
+				  {
+					  ptree => make_match("a"),
+					  stree => make_match("a")
+				  }
+			  ]
             });
 
     my $sorry = Komposita::Splitter::new(
@@ -73,32 +104,48 @@ BEGIN {
         sub { return $_[0] eq 'schuldig'; },
         sub { return $_[0] eq 'ung'; });
     
-    is_deeply($sorry->("ent"), {});
-    is_deeply($sorry->("schuldig"), { match => "schuldig" } );
-    is_deeply($sorry->("ung"), {});
+    is_deeply($sorry->("ent"), make_nomatch("ent"));
+    is_deeply($sorry->("schuldig"), make_match("schuldig"));
+    is_deeply($sorry->("ung"), make_nomatch("ung"));
     
     is_deeply($sorry->("entschuldig"),
                 {
-                    prefix => "ent",
-                    suffix => "schuldig",
-                    ptree => $sorry->("ent"),
-                    stree => $sorry->("schuldig")
+					slice => "entschuldig",
+					splits => 
+					[
+						{
+							ptree => $sorry->("ent"),
+							stree => $sorry->("schuldig")
+						}
+					]
                 });
 
     is_deeply($sorry->("schuldigung"),
                 {
-                    prefix => "schuldig",
-                    suffix => "ung",
-                    ptree => $sorry->("schuldig"),
-                    stree => $sorry->("ung")
+					slice => "schuldigung",
+					splits =>
+					[
+						{
+							ptree => $sorry->("schuldig"),
+							stree => $sorry->("ung")
+						}
+					]
                 });
 
 	is_deeply($sorry->("entschuldigung"),
 			   {
-			       prefix => "entschuldig",
-			       suffix => "ung",
-			       ptree => $sorry->("entschuldig"),
-			       stree => $sorry->("ung")
+				   slice => "entschuldigung",
+				   splits => 
+				   [
+						{
+							ptree => $sorry->("entschuldig"),
+							stree => $sorry->("ung")
+						},
+						{
+							ptree => $sorry->("ent"),
+							stree => $sorry->("schuldigung")
+						},
+				   ]
 			   });
 
 
@@ -109,14 +156,20 @@ BEGIN {
 
 	is_deeply($friendly->("freund"),
 			   {
-			       match => "freund",
+			       slice => "freund",
+				   match => 1,
+				   splits => []
 			   });
 	is_deeply($friendly->("freunds"),
 			   {
-			       prefix => "freund",
-			       suffix => "s",
-			       ptree => $friendly->("freund"),
-			       stree => $friendly->("s")
+				   slice => "freunds",
+				   splits =>
+				   [
+						{
+						   ptree => $friendly->("freund"),
+						   stree => $friendly->("s")
+						}
+				   ]
 			   });
 }
 
