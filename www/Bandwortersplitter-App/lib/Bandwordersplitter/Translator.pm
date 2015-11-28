@@ -13,7 +13,9 @@ use Net::Dict;
 #TODO: this should be configurable to use
 #localhost.
 my $dict = Net::Dict->new("localhost");
-$dict->setDicts('fd-deu-eng', 'german-english');
+die "Can't connect to dict" unless $dict;
+
+$dict->setDicts('deu-eng', 'german-english');
 
 sub file_to_set {
     my $path = shift;
