@@ -40,19 +40,22 @@ sub tree_as_table {
 
     if (defined $node->{split}) {
 		my $split = $node->{split};
-    	push @ret, "<table>";
+		if ($split->{ptree}->{ok_trans} > 0 ||
+			$split->{stree}->{ok_trans} > 0) {
+			push @ret, "<table>";
 
-		push @ret, "<tr>";
-        push @ret, "<td>";
-        push @ret, tree_as_table($split->{ptree}, $indent + 1);
-        push @ret, "</td>";
+			push @ret, "<tr>";
+			push @ret, "<td>";
+			push @ret, tree_as_table($split->{ptree}, $indent + 1);
+			push @ret, "</td>";
 
-        push @ret, "<td>";
-        push @ret, tree_as_table($split->{stree}, $indent + 1);
-        push @ret, "</td>";
-    
-		push @ret, "<tr>";
-		push @ret, "</table>";
+			push @ret, "<td>";
+			push @ret, tree_as_table($split->{stree}, $indent + 1);
+			push @ret, "</td>";
+		
+			push @ret, "<tr>";
+			push @ret, "</table>";
+		}
     }
 
 

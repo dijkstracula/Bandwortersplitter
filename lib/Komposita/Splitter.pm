@@ -5,9 +5,10 @@ use strict;
 use warnings;
 
 use Carp;
+use Dancer2;
 use Data::Dumper;
 use JSON;
-use List::MoreUtils qw(all);
+use List::MoreUtils qw(any all);
 
 =head1 NAME
 
@@ -43,7 +44,7 @@ TODO: Come up with a more fun example than this.
         \&de_prefix_lookup, \&de_word_lookup, \&de_suffix_lookup);
 
     my $tree = $sp->("entschuldigung");
-
+ 
 =head1 SUBROUTINES/METHODS
 
 =head2 new(&check_suffix, &check_word, &check_suffix)
@@ -69,8 +70,30 @@ sub new(&&&) {
     my %arg_cache;
 
     my $valid_split = sub($$) {
-        my ($prefix, $suffix) = @_;
-        return $check_word->($prefix) && $check_word->($suffix);
+        my ($ptree, $stree) = @_;
+		
+		# A valid split is one where both splits are dictionary words.
+        my $pret = $check_word->($ptree->{slice});
+		my $sret = $check_word->($stree->{slice});
+			
+		# A valid prefix or suffix can also be one that can be reassembled
+		# into a valid word (e.g. one level of the tree need not be a
+		# dictionary word)
+		# TODO: something like this is important for longer words but I
+		# don't think this is quite it.
+		#if (!$pret) {
+		#		$pret |= any {
+		#		my ($sp) = $_;
+		#			$check_word->($sp->{ptree}->{slice}) && $check_word->($sp->{stree}->{slice});
+		#		} @{$stree->{splits}};
+		#}
+		#if (!$sret) {
+		#	$sret |= any {
+		#		my ($sp) = $_;
+		#		$check_word->($sp->{ptree}->{slice}) && $check_word->($sp->{stree}->{slice});
+		#	} @{$stree->{splits}};
+		#}
+		return $pret && $sret;
     };
     my $valid_prefix = sub($$) {
         my ($prefix, $stree) = @_;
@@ -114,9 +137,12 @@ sub new(&&&) {
             my $prefix = substr($str, 0, $offset);
             my $suffix = substr($str, $offset, length($str));
 
-            if ($valid_split->($prefix, $suffix)                  ||
-                ($valid_prefix->($prefix,        $fn->($suffix))) ||
-                ($valid_suffix->($fn->($prefix), $suffix))) {
+			my $pref_rec = $fn->($prefix);
+			my $suff_rec = $fn->($suffix);
+
+            if ($valid_split->($pref_rec,   $suff_rec) ||
+                $valid_prefix->($prefix,   $suff_rec) ||
+                $valid_suffix->($pref_rec, $suffix)) {
 
 				push $ret->{splits}, {
 					ptree => $fn->($prefix),
@@ -140,6 +166,16 @@ sub tree_as_json($%) {
     my ($tree) = @_;
     my $j = new JSON;
     return $j->encode($tree, {utf8 => 1, pretty => 1});
+}
+
+sub _match_inc {
+	my ($tree) = @_;
+	defined $tree->{match} ? 1 : 0;
+}
+sub _valid_tree {
+	my ($tree) = @_;
+	my $matches = scalar(grep { _match_inc($_) } $tree->{splits});
+	$matches + _match_inc($tree);
 }
 
 =head1 AUTHOR
