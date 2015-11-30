@@ -11,11 +11,6 @@ use List::MoreUtils qw(uniq);
 use Memoize;
 use Net::Dict;
 
-#TODO: this should be configurable to use
-#localhost.
-my $dict = Net::Dict->new("localhost");
-die "Can't connect to dict" unless $dict;
-
 $dict->setDicts('fd-deu-eng', 'german-english');
 
 sub file_to_set {
@@ -60,6 +55,11 @@ sub new_de_splitter {
 }
 
 sub translate($) {
+	#TODO: this should be configurable to use
+	#localhost.
+	my $dict = Net::Dict->new("localhost");
+	die "Can't connect to dict" unless $dict;
+
 	#TODO: Encoding this makes no sense
 	my $word = encode('UTF-8', $_[0], Encode::FB_DEFAULT);
 	my $defns = $dict->define($word);
@@ -115,17 +115,10 @@ sub create_translated_node($) {
 		if (not defined $s->{ptree} || not defined $s->{stree}) {
 			$ratio = 0;
 		} elsif (defined $s->{ptree}->{en} && defined $s->{stree}->{en}) {
-			debug(Dumper($s));
 			$ratio = 1;
 		} else {
-			# Boost the ratio if the prefix or suffix are actually words.
-			# TODO: incrementing by 2 is a totally arbitrary thing idk but
-			# weighing the current level twice as much as the subseqeuent
-			# ones maybe makes sense?
-			my $boost = 0;
-
-			$ratio = ($s->{ptree}->{ok_trans} + $s->{stree}->{ok_trans} + $boost) / 
-					($s->{ptree}->{total_trans} + $s->{stree}->{total_trans});
+			$ratio = ($s->{ptree}->{ok_trans} + $s->{stree}->{ok_trans}) / 
+					 ($s->{ptree}->{total_trans} + $s->{stree}->{total_trans});
 		}
 		if ($ratio > $best_trans_ratio) {
 			$best_split = $s;
