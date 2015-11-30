@@ -114,13 +114,15 @@ sub create_translated_node($) {
 		my $ratio;
 		if (not defined $s->{ptree} || not defined $s->{stree}) {
 			$ratio = 0;
+		} elsif (defined $s->{ptree}->{en} && defined $s->{stree}->{en}) {
+			debug(Dumper($s));
+			$ratio = 1;
 		} else {
 			# Boost the ratio if the prefix or suffix are actually words.
 			# TODO: incrementing by 2 is a totally arbitrary thing idk but
 			# weighing the current level twice as much as the subseqeuent
 			# ones maybe makes sense?
-			my $boost = (defined $s->{ptree}->{en} ? 2 : 0) +
-						(defined $s->{stree}->{en} ? 2 : 0);
+			my $boost = 0;
 
 			$ratio = ($s->{ptree}->{ok_trans} + $s->{stree}->{ok_trans} + $boost) / 
 					($s->{ptree}->{total_trans} + $s->{stree}->{total_trans});
