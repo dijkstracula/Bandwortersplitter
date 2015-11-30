@@ -11,8 +11,6 @@ use List::MoreUtils qw(uniq);
 use Memoize;
 use Net::Dict;
 
-$dict->setDicts('fd-deu-eng', 'german-english');
-
 sub file_to_set {
     my $path = shift;
     my %set;
@@ -59,6 +57,7 @@ sub translate($) {
 	#localhost.
 	my $dict = Net::Dict->new("localhost");
 	die "Can't connect to dict" unless $dict;
+	$dict->setDicts('fd-deu-eng', 'german-english');
 
 	#TODO: Encoding this makes no sense
 	my $word = encode('UTF-8', $_[0], Encode::FB_DEFAULT);

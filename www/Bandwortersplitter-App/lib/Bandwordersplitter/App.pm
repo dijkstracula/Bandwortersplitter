@@ -18,7 +18,8 @@ get '/split' => sub {
 		if (length($query) > 100) {
 			return send_error("Query too long");
 		}
-
+		
+		$query =~ s/\s//g;
 		if ($query !~ /^[[:alpha:]]*$/) {
 			return send_error("Non-alphabetic characters");
 		}
