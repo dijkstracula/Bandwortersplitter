@@ -17,7 +17,7 @@
 <body>
 <% content %>
 <div id="footer">
-    <p>Mit liebe von <a href="http://nathan.dijkstracula.net/">nathan</a> machte | <a href="https://github.com/dijkstracula/Bandwortersplitter">source</a></p>
+    <p>Mit Liebe von <a href="http://nathan.dijkstracula.net/">Nathan</a> gemacht | <a href="https://github.com/dijkstracula/Bandwortersplitter">source</a></p>
 </div>
 </body>
 </html>

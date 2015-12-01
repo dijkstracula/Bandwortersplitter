@@ -24,6 +24,8 @@ get '/split' => sub {
 			return send_error("Non-alphabetic characters");
 		}
 
+        push_header param_name("Surrogate-Key") => param("Bandwortersplitter");
+
         return template 'split', {
             query => $query,
             tree => Bandwordersplitter::Renderer::gen_split($query)
