@@ -1,27 +1,26 @@
-use 5.006;
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
+# Normalize version strings like 6.30_02 to 6.3002,
+# so that we can do numerical comparisons on it.
+my $eumm_version = $ExtUtils::MakeMaker::VERSION;
+$eumm_version =~ s/_//;
+
 WriteMakefile(
-    NAME             => 'Komposita',
-    AUTHOR           => q{Nathan Taylor <nbtaylor@gmail.com>},
-    VERSION_FROM     => 'lib/Komposita/Splitter.pm',
-    ABSTRACT_FROM    => 'lib/Komposita/Splitter.pm',
-    LICENSE          => 'artistic_2',
-    PL_FILES         => {},
-    MIN_PERL_VERSION => 5.006,
-    CONFIGURE_REQUIRES => {
-        'ExtUtils::MakeMaker' => 0,
-        'Tree::Simple' => 0,
-    },
-    BUILD_REQUIRES => {
-        'Test::More' => 0,
-    },
+    NAME                => 'Bandwordersplitter::App',
+    AUTHOR              => q{YOUR NAME <youremail@example.com>},
+    VERSION_FROM        => 'lib/Bandwordersplitter/App.pm',
+    ABSTRACT            => 'YOUR APPLICATION ABSTRACT',
+    ($eumm_version >= 6.3001
+      ? ('LICENSE'=> 'perl')
+      : ()),
+    PL_FILES            => {},
     PREREQ_PM => {
-        #'ABC'              => 1.6,
-        #'Foo::Bar::Module' => 5.0401,
+        'Test::More' => 0,
+        'YAML'       => 0,
+        'Dancer2'     => 0.163000,
     },
-    dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Komposita-*' },
+    dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean               => { FILES => 'Bandwordersplitter-App-*' },
 );

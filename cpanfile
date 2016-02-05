@@ -1,5 +1,13 @@
-requires 'Config::Simple';
-requires 'ExtUtils::MakeMaker';
-requires 'Data::Dumper';
-requires 'JSON';
-requires 'List::Util';
+requires "Net::Dict";
+requires "Dancer2" => "0.163000";
+requires "Komposita";
+
+recommends "YAML"             => "0";
+recommends "URL::Encode::XS"  => "0";
+recommends "CGI::Deurl::XS"   => "0";
+recommends "HTTP::Parser::XS" => "0";
+
+on "test" => sub {
+    requires "Test::More"            => "0";
+    requires "HTTP::Request::Common" => "0";
+};
