@@ -41,7 +41,7 @@ sub new_de_splitter {
 			# Try and chop off a leading 's' in the case that it's a possessive
 			# word combination (e.g. for unabhängigkeit_s_erklärung
 			if (!$exists && substr $word, -1 eq 's') {
-            	$exists ||= exists($words->{substr $word, 0, -1});
+   	        	$exists ||= exists($words->{substr $word, 0, -1});
 			}
 
 			return $exists;
@@ -98,7 +98,8 @@ sub create_translated_node($) {
 		total_trans => 1,
 	};
 		
-	if (defined $new_node->{en}) {
+	if (defined $new_node->{en} || $new_node->{de} eq 's') {
+		$new_node->{valid} = 1;
 		$new_node->{ok_trans}++;
 	}
 
@@ -113,7 +114,7 @@ sub create_translated_node($) {
 		my $ratio;
 		if (not defined $s->{ptree} || not defined $s->{stree}) {
 			$ratio = 0;
-		} elsif (defined $s->{ptree}->{en} && defined $s->{stree}->{en}) {
+		} elsif ($s->{ptree}->{valid} && $s->{stree}->{valid}) {
 			$ratio = 1;
 		} else {
 			$ratio = ($s->{ptree}->{ok_trans} + $s->{stree}->{ok_trans}) / 
@@ -128,6 +129,12 @@ sub create_translated_node($) {
 	$new_node->{split} = $best_split;
 	$new_node->{ok_trans} += $best_split->{ptree}->{ok_trans} + $best_split->{stree}->{ok_trans};
 	$new_node->{total_trans} += $best_split->{ptree}->{total_trans} + $best_split->{stree}->{total_trans};
+
+	# We also consider a node to be valid if both its split's children are valid.
+	if ($new_node->{de} eq 's' || 
+		($best_split->{ptree}->{valid} && $best_split->{stree}->{valid})) {
+		$new_node->{valid} = 1;
+	}
 
 	return $new_node;
 }

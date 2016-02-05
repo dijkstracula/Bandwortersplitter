@@ -26,19 +26,19 @@ sub tree_as_table {
 
     push @ret, '<div id="tree">';
 
-	if (defined $node->{en}) {
+	if ($node->{valid}) {
 		push @ret, "<h3>" . leo_link($node->{de}) . "</h3>";
 	} else {
 		push @ret, "<h3>$node->{de}</h3>";
 	}
 
-	if (defined $node->{en}) {
+	if ($node->{en}) {
 		$Text::Wrap::columns = 30;
 		push @ret, "<pre>" . wrap("", "", $node->{en}) . "</pre>";
 	}
 	push @ret, "<h4>($node->{ok_trans}/$node->{total_trans})</h4>";
 
-    if (defined $node->{split}) {
+    if ($node->{split}) {
 		my $split = $node->{split};
 		if ($split->{ptree}->{ok_trans} > 0 ||
 			$split->{stree}->{ok_trans} > 0) {

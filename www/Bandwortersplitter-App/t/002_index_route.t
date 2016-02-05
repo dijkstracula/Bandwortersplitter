@@ -11,5 +11,5 @@ is( ref $app, 'CODE', 'Got app' );
 
 my $test = Plack::Test->create($app);
 
-my $res  = $test->request( GET '/' );
-ok( $res->is_success, '[GET /] successful' );
+my $res  = $test->request( GET '/split' );
+ok( $res->is_success, '[GET /split] successful' );
