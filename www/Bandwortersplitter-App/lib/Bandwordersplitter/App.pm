@@ -12,6 +12,9 @@ get '/' => sub {
 };
 
 get '/split' => sub {
+        
+    push_header("Surrogate-Key" => "Bandwortersplitter");
+
     if (defined params->{"q"}) {
         my $query = lc(params->{"q"});
 
