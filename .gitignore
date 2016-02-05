@@ -14,5 +14,5 @@ inc/
 nytprof.out
 pod2htm*.tmp
 pm_to_blib
-Komposita-Splitter-*
-Komposita-Splitter-*.tar.gz
+Quatsch-Splitter-*
+Quatsch-Splitter-*.tar.gz

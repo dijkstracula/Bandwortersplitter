@@ -1,6 +1,6 @@
 requires "Net::Dict";
 requires "Dancer2" => "0.163000";
-requires "Komposita";
+requires "Quatsch";
 
 recommends "YAML"             => "0";
 recommends "URL::Encode::XS"  => "0";

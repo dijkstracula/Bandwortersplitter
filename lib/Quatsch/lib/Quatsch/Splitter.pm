@@ -1,4 +1,4 @@
-package Komposita::Splitter;
+package Quatsch::Splitter;
 
 use 5.006;
 use strict;
@@ -12,7 +12,7 @@ use List::MoreUtils qw(any all);
 
 =head1 NAME
 
-Komposita::Splitter - Compound word splitter
+Quatsch::Splitter - Compound word splitter
 
 =head1 VERSION
 
@@ -38,9 +38,9 @@ splits of the German word "Unsterblichkeit" might be
 
 TODO: Come up with a more fun example than this.
     
-    use Komposita::Splitter;
+    use Quatsch::Splitter;
 
-    my $sp = Komposita::Splitter->new(
+    my $sp = Quatsch::Splitter->new(
         \&de_prefix_lookup, \&de_word_lookup, \&de_suffix_lookup);
 
     my $tree = $sp->("entschuldigung");
@@ -185,7 +185,7 @@ Nathan Taylor, C<< <nbtaylor at gmail.com> >>
 =head1 BUGS
 
 Please report any bugs or feature requests to C<bug-komposita-splitter at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Komposita-Splitter>.  I will be notified, and then you'll
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Quatsch-Splitter>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 
@@ -195,7 +195,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Komposita::Splitter
+    perldoc Quatsch::Splitter
 
 
 You can also look for information at:
@@ -204,19 +204,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker (report bugs here)
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Komposita-Splitter>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Quatsch-Splitter>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/Komposita-Splitter>
+L<http://annocpan.org/dist/Quatsch-Splitter>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/Komposita-Splitter>
+L<http://cpanratings.perl.org/d/Quatsch-Splitter>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/Komposita-Splitter/>
+L<http://search.cpan.org/dist/Quatsch-Splitter/>
 
 =back
 
@@ -267,4 +267,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Komposita::Splitter
+1; # End of Quatsch::Splitter

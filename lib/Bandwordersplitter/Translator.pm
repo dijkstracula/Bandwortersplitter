@@ -6,7 +6,7 @@ use warnings;
 use Dancer2;
 use Data::Dumper;
 use Encode qw(decode encode);
-use Komposita::Splitter;
+use Quatsch::Splitter;
 use List::MoreUtils qw(uniq);
 use Memoize;
 use Net::Dict;
@@ -30,7 +30,7 @@ my $words = file_to_set("db/de_words.txt");
 my $suffixes = file_to_set("db/de_suffixes.txt");
 
 sub new_de_splitter {
-    return Komposita::Splitter::new(
+    return Quatsch::Splitter::new(
         sub {
             exists($prefixes->{$_[0]});
         },

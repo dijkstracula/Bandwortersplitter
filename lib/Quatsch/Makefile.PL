@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME             => 'Komposita',
+    NAME             => 'Quatsch',
     AUTHOR           => q{Nathan Taylor <nbtaylor@gmail.com>},
-    VERSION_FROM     => 'lib/Komposita/Splitter.pm',
-    ABSTRACT_FROM    => 'lib/Komposita/Splitter.pm',
+    VERSION_FROM     => 'lib/Quatsch/Splitter.pm',
+    ABSTRACT_FROM    => 'lib/Quatsch/Splitter.pm',
     LICENSE          => 'artistic_2',
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.006,
@@ -23,5 +23,5 @@ WriteMakefile(
         #'Foo::Bar::Module' => 5.0401,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Komposita-*' },
+    clean => { FILES => 'Quatsch-*' },
 );

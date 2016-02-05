@@ -1,3 +1,9 @@
+package Quatsch;
+
+use 5.006;
+use strict;
+use warnings;
+
 =head1 NAME
 
 Bandwörtersplitter - Compound word manipulation website
@@ -6,13 +12,18 @@ Bandwörtersplitter - Compound word manipulation website
 
 Version 0.01
 
+=cut
+
+our $VERSION = '0.01';
+
+
 =head1 SYNOPSIS
 
-This repo comprises two parts: the `Komposita` word splitter
+This repo comprises two parts: the `Quatsch` word splitter
 module and a Dancer-fronted webapp.
 
-    use Komposita::Splitter;
-    use Komposita::Transform;
+    use Quatsch::Splitter;
+    use Quatsch::Transform;
 
     ######## populate a dictionary of prefixes, 
     ######## suffixes, and a de->en dictionary
@@ -21,7 +32,7 @@ module and a Dancer-fronted webapp.
     %dict = { "das" => "that", "ist" => "is", ... };
 
     ######## generate a splitter based on those dictionaries
-    my $sp = Komposita::Splitter->new(
+    my $sp = Quatsch::Splitter->new(
         sub { exists($prefixes{$_}); },
         sub { exists($dict{$_});     },
         sub { exists($suffixes{$_}); });
@@ -30,7 +41,7 @@ module and a Dancer-fronted webapp.
     my $tree = $sp->("entschuldigung");
 
     ######## operate over those trees
-    my $translation = Komposita::Transform::map( 
+    my $translation = Quatsch::Transform::map( 
         sub {
             my ($node) = @_;
             { de => $node->{match}, 
@@ -47,14 +58,14 @@ Nathan Taylor, C<< <nbtaylor at gmail.com> >>
 =head1 BUGS
 
 Please report any bugs or feature requests to C<bug-komposita at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Komposita>.  I will be notified, and then you'll
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Quatsch>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Komposita
+    perldoc Quatsch
 
 
 You can also look for information at:
@@ -63,19 +74,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker (report bugs here)
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Komposita>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Quatsch>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/Komposita>
+L<http://annocpan.org/dist/Quatsch>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/Komposita>
+L<http://cpanratings.perl.org/d/Quatsch>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/Komposita/>
+L<http://search.cpan.org/dist/Quatsch/>
 
 =back
 
@@ -124,3 +135,6 @@ CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+=cut
+
+1; # End of Quatsch

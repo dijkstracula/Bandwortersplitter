@@ -1,4 +1,4 @@
-Komposita
+Quatsch
 
 The README is used to introduce the module and provide instructions on
 how to install the module, any machine dependencies it may have (for
@@ -26,21 +26,21 @@ SUPPORT AND DOCUMENTATION
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc Komposita::Splitter
+    perldoc Quatsch::Splitter
 
 You can also look for information at:
 
     RT, CPAN's request tracker (report bugs here)
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Komposita-Splitter
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Quatsch-Splitter
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Komposita-Splitter
+        http://annocpan.org/dist/Quatsch-Splitter
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/Komposita-Splitter
+        http://cpanratings.perl.org/d/Quatsch-Splitter
 
     Search CPAN
-        http://search.cpan.org/dist/Komposita-Splitter/
+        http://search.cpan.org/dist/Quatsch-Splitter/
 
 
 LICENSE AND COPYRIGHT

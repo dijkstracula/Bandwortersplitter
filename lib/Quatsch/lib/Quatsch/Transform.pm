@@ -1,4 +1,4 @@
-package Komposita::Transform;
+package Quatsch::Transform;
 
 use 5.006;
 use strict;
@@ -11,7 +11,7 @@ use List::MoreUtils qw(all);
 
 =head1 NAME
 
-Komposita::Transform - Operations on word split trees.
+Quatsch::Transform - Operations on word split trees.
 
 =head1 VERSION
 
@@ -25,16 +25,16 @@ our $VERSION = '0.01';
 =head1 SYNOPSIS
 
 The Transform module transforms a tree of compound word splits,
-as defined in Komposita::Splitter.
+as defined in Quatsch::Splitter.
 
-    use Komposita::Splitter;
-    use Komposita::Transform;
+    use Quatsch::Splitter;
+    use Quatsch::Transform;
 
-    my $sp = Komposita::Splitter->new(
+    my $sp = Quatsch::Splitter->new(
         \&de_prefix_lookup, \&de_word_lookup, \&de_suffix_lookup);
 
     my $orig_tree = $sp->("entschuldigung");
-    my $new_tree = Komposita::Transform->map($sp, sub { ... });
+    my $new_tree = Quatsch::Transform->map($sp, sub { ... });
 
 =head1 SUBROUTINES/METHODS
 
@@ -61,8 +61,8 @@ sub filter {
 			$ret = $node;
 		}
 	} else {
-		my $pref = Komposita::Transform::filter->($f, $node->{ptree});
-		my $suff = Komposita::Transform::filter->($f, $node->{stree});
+		my $pref = Quatsch::Transform::filter->($f, $node->{ptree});
+		my $suff = Quatsch::Transform::filter->($f, $node->{stree});
 
 		return undef unless (defined $pref || defined $suff);
 		
@@ -95,8 +95,8 @@ sub map {
 	# had the transformation applied to them.
 	my @new_nodes = map {
 		{
-			ptree => Komposita::Transform::map->($f, $_->{ptree}),
-			stree => Komposita::Transform::map->($f, $_->{stree}), 
+			ptree => Quatsch::Transform::map->($f, $_->{ptree}),
+			stree => Quatsch::Transform::map->($f, $_->{stree}), 
 		}
 	} @{$node->{splits}};
 	
@@ -117,7 +117,7 @@ Nathan Taylor, C<< <nbtaylor at gmail.com> >>
 =head1 BUGS
 
 Please report any bugs or feature requests to C<bug-komposita-splitter at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Komposita-Splitter>.  I will be notified, and then you'll
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Quatsch-Splitter>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 
@@ -127,7 +127,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Komposita::Splitter
+    perldoc Quatsch::Splitter
 
 
 You can also look for information at:
@@ -136,19 +136,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker (report bugs here)
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Komposita-Splitter>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Quatsch-Splitter>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/Komposita-Splitter>
+L<http://annocpan.org/dist/Quatsch-Splitter>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/Komposita-Splitter>
+L<http://cpanratings.perl.org/d/Quatsch-Splitter>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/Komposita-Splitter/>
+L<http://search.cpan.org/dist/Quatsch-Splitter/>
 
 =back
 
@@ -199,4 +199,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Komposita::Transform
+1; # End of Quatsch::Transform

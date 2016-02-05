@@ -50,7 +50,7 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
-  module_boilerplate_ok('lib/Komposita/Splitter.pm');
+  module_boilerplate_ok('lib/Quatsch/Splitter.pm');
 
 
 }

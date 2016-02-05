@@ -4,8 +4,8 @@ use Bandwordersplitter::Translator;
 use Dancer2;
 use Data::Dumper;
 use Exporter;
-use Komposita::Splitter;
-use Komposita::Transform;
+use Quatsch::Splitter;
+use Quatsch::Transform;
 use Text::Wrap;
 
 our @EXPORT_OK = qw(gen_split);
@@ -74,7 +74,7 @@ sub gen_split {
 
     my $result = $splitter->($query);
 
-    $result = Komposita::Transform::map(
+    $result = Quatsch::Transform::map(
         \&Bandwordersplitter::Translator::create_translated_node, $result);
 
     return tree_as_table($result);

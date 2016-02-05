@@ -1,7 +1,7 @@
 package Bandwordersplitter::App;
 
 use Dancer2;
-use Komposita::Transform;
+use Quatsch::Transform;
 
 use Bandwordersplitter::Renderer;
 

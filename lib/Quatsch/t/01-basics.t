@@ -5,7 +5,7 @@ use warnings;
 use Data::Dumper;
 use Test::More;
 
-use Komposita::Splitter;
+use Quatsch::Splitter;
 
 plan tests => 18;
 
@@ -40,7 +40,7 @@ sub make_match($) {
 }
 
 BEGIN {
-    my $noper = Komposita::Splitter::new(\&nope, \&nope, \&nope);
+    my $noper = Quatsch::Splitter::new(\&nope, \&nope, \&nope);
 	my $empty = { splits => [] };
 
     is_deeply($noper->(""),   make_nomatch(""), "nope() should produce no splits");
@@ -48,7 +48,7 @@ BEGIN {
     is_deeply($noper->("aa"), make_nomatch("aa"), "nope() should produce no splits");
 
 
-    my $yepper = Komposita::Splitter::new(\&nope, \&yep, \&nope);
+    my $yepper = Quatsch::Splitter::new(\&nope, \&yep, \&nope);
 
     is_deeply($yepper->(""),   make_nomatch(""), "empty should produce no splits");
     is_deeply($yepper->("a"), make_match("a"));
@@ -80,7 +80,7 @@ BEGIN {
             });
 
 
-    my $vowels_only = Komposita::Splitter::new(\&nope, \&vwls, \&nope);
+    my $vowels_only = Quatsch::Splitter::new(\&nope, \&vwls, \&nope);
     
     is_deeply($vowels_only->("a"), make_match("a"));
 
@@ -99,7 +99,7 @@ BEGIN {
 			  ]
             });
 
-    my $sorry = Komposita::Splitter::new(
+    my $sorry = Quatsch::Splitter::new(
         sub { return $_[0] eq 'ent'; },
         sub { return $_[0] eq 'schuldig'; },
         sub { return $_[0] eq 'ung'; });
@@ -149,7 +149,7 @@ BEGIN {
 			   });
 
 
-    my $friendly = Komposita::Splitter::new(
+    my $friendly = Quatsch::Splitter::new(
 		\&nope,
         sub { return $_[0] eq 'freund'; },
         sub { return $_[0] eq 's'; });
@@ -173,4 +173,4 @@ BEGIN {
 			   });
 }
 
-diag( "Testing Komposita::Splitter $Komposita::Splitter::VERSION, Perl $], $^X" );
+diag( "Testing Quatsch::Splitter $Quatsch::Splitter::VERSION, Perl $], $^X" );
