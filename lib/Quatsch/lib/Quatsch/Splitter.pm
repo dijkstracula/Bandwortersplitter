@@ -144,7 +144,7 @@ sub new(&&&) {
                 $valid_prefix->($prefix,   $suff_rec) ||
                 $valid_suffix->($pref_rec, $suffix)) {
 
-				push $ret->{splits}, {
+				push @{$ret->{splits}}, {
 					ptree => $fn->($prefix),
 					stree => $fn->($suffix),
 				};
